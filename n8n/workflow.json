@@ -1,0 +1,103 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        0
+      ],
+      "id": "621f1a38-4952-4360-9a16-ababaf48214e",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT id, file_name FROM jobs WHERE status = 'COMPLETED'",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        208,
+        0
+      ],
+      "id": "b50bffca-a5ae-4e76-b998-ca4e0dafe0db",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "postgres": {
+          "id": "yXrt48rMHN5Ou4Fp",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO sales_daily_summary (date, total_sales, total_quantity, record_count)\nSELECT date, SUM(total), SUM(quantity), COUNT(*)\nFROM sales\nGROUP BY date\nON CONFLICT (date) DO UPDATE SET\n    total_sales = EXCLUDED.total_sales,\n    total_quantity = EXCLUDED.total_quantity,\n    record_count = EXCLUDED.record_count",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        416,
+        0
+      ],
+      "id": "309bb2b4-3d04-45f6-bbae-4d02f32e084d",
+      "name": "Execute a SQL query1",
+      "credentials": {
+        "postgres": {
+          "id": "yXrt48rMHN5Ou4Fp",
+          "name": "Postgres account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "d637dbd1-47dc-47f7-a23e-b4dcb8654fb8",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "71ed796ecdbb9d89ccfe26f04d2e3e5f7eca1301fefa2bcad5476a85802ef221"
+  },
+  "id": "PPmknYFjT2jajfs7",
+  "tags": []
+}
