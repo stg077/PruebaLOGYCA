@@ -5,7 +5,7 @@ from psycopg2.extras import execute_values
 
 
 class MockCursor:
-    """Cursor simulado que registra las queries ejecutadas"""
+    #Cursor simulado que registra las queries ejecutadas
     def __init__(self):
         self.queries = []
         self.inserted_data = []
@@ -18,7 +18,7 @@ class MockCursor:
 
 
 class MockConnection:
-    """Conexión simulada a PostgreSQL"""
+    #Conexión simulada a PostgreSQL
     def __init__(self):
         self.cursor_obj = MockCursor()
         self.committed = 0
@@ -37,7 +37,7 @@ class MockConnection:
 
 @patch("app.services.worker.execute_values")
 def test_process_csv_inserta_correctamente(mock_execute_values):
-    """Verifica que process_csv inserte datos correctamente usando execute_values"""
+    #Verifica que process_csv inserte datos correctamente usando execute_values
     from app.services.worker import process_csv
 
     conn = MockConnection()
@@ -53,7 +53,7 @@ def test_process_csv_inserta_correctamente(mock_execute_values):
 
 @patch("app.services.worker.execute_values")
 def test_process_csv_calcula_total(mock_execute_values):
-    """Verifica que el total se calcule correctamente (quantity * price)"""
+    #Verifica que el total se calcule correctamente (quantity * price)
     from app.services.worker import process_csv
 
     conn = MockConnection()
@@ -72,7 +72,7 @@ def test_process_csv_calcula_total(mock_execute_values):
 
 @patch("app.services.worker.execute_values")
 def test_process_csv_batch_grande(mock_execute_values):
-    """Verifica que con muchas filas se hagan múltiples batches"""
+    #Verifica que con muchas filas se hagan múltiples batches
     from app.services.worker import process_csv
 
     conn = MockConnection()
@@ -95,7 +95,7 @@ def test_process_csv_batch_grande(mock_execute_values):
 
 @patch("app.services.worker.execute_values")
 def test_process_csv_stream_valida_header(mock_execute_values):
-    """Verifica que process_csv_stream rechace CSVs con columnas inválidas"""
+    #Verifica que process_csv_stream rechace CSVs con columnas inválidas
     from app.services.worker import process_csv_stream
 
     conn = MockConnection()
@@ -111,7 +111,7 @@ def test_process_csv_stream_valida_header(mock_execute_values):
 
 @patch("app.services.worker.execute_values")
 def test_process_csv_stream_funciona(mock_execute_values):
-    """Verifica que process_csv_stream procese correctamente un blob en chunks"""
+    #Verifica que process_csv_stream procese correctamente un blob en chunks
     from app.services.worker import process_csv_stream
 
     conn = MockConnection()
@@ -130,7 +130,7 @@ def test_process_csv_stream_funciona(mock_execute_values):
 
 @patch("app.services.worker.execute_values")
 def test_process_csv_filas_malformadas(mock_execute_values):
-    """Verifica que filas malformadas se ignoren sin romper el proceso"""
+    #Verifica que filas malformadas se ignoren sin romper el proceso
     from app.services.worker import process_csv_stream
 
     conn = MockConnection()
