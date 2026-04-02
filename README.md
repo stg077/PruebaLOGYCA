@@ -146,6 +146,15 @@ PRUEBALOGYCA/
 ```bash
 git clone https://github.com/stg077/PruebaLOGYCA.git
 cd PruebaLOGYCA
+
+### Configurar variables de entorno
+###Antes de ejecutar cualquier opción, copia los archivos de ejemplo:
+
+cp .env.example .env
+cp .env.docker.example .env.docker
+
+#Estos archivos contienen la configuración para desarrollo local y con docker (con Azurite como emulador de Azure #Storage). Los valores ya están preconfigurados y no necesitan cambios para desarrollo.
+
 # Crear el entorno virtual
 python3 -m venv venv
 
@@ -161,24 +170,12 @@ En caso de que solo descargue el comprimido del proyecto corrobore que este dent
 todo de la mejor manera
 ---
 
-### Configurar variables de entorno
-
-Antes de ejecutar cualquier opción, copia los archivos de ejemplo:
-```bash
-rm .env .env.docker
-cp .env.example .env
-cp .env.docker.example .env.docker
-```
-
-Estos archivos contienen la configuración para desarrollo local (con Azurite como emulador de Azure Storage). Los valores ya están preconfigurados y no necesitan cambios para desarrollo.
-
----
 
 ### Opción 1: Todo con Docker Compose (recomendada)
 
 Este comando levanta todo el ecosistema: PostgreSQL, Azurite, n8n, la API y el Worker.
 
-Nota: Si tienes un entorno virtual activo, puedes desactivarlo con el comando desactivate antes de correr Docker para evitar confusiones de rutas, aunque no es estrictamente necesario.
+Nota: Si tienes un entorno virtual activo, puedes desactivarlo con el comando deactivate antes de correr Docker para evitar confusiones de rutas, aunque no es estrictamente necesario.
 
 ```bash
 docker-compose up -d --build
@@ -275,8 +272,8 @@ python -m app.services.worker
 5. Configurar N8N:
    - Abrir `http://localhost:5678` en el navegador
    - Ir a **Workflows** > **Import from File**
-   - Seleccionar el archivo `n8n/workflow.json` incluido en el proyecto
-   - Configurar las credenciales de PostgreSQL en N8N (host: `localhost` o `postgres` si es Docker, puerto: `5432`, base: `logyca_sales`, usuario: `postgres`, contraseña: `postgres`)
+   - Seleccionar el archivo **`n8n/workflow.json`** incluido en el proyecto
+   - Configurar las credenciales de PostgreSQL en N8N (host: `localhost` o `postgres` si es Docker, puerto: `5432`, **base: `logyca_sales`**, usuario: `postgres`, contraseña: `postgres`)
    - Activar el workflow para que ejecute periódicamente y genere el resumen diario en `sales_daily_summary`
 6. Para validar la ejecucion de el WorkFlow de n8n ejecutar `http://localhost:8000/stats` Este traera una breve resumen de las base de datos integradas
 
