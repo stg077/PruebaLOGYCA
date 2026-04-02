@@ -122,8 +122,9 @@ PRUEBALOGYCA/
 │   └── sample.csv                 # CSV de ejemplo (100,000 registros)
 ├── n8n/
 │   └── workflow.json              # Export del workflow de N8N
-├── .env                           # Variables de entorno (local)
-├── .env.docker                    # Variables de entorno (Docker)
+├── .env.example                   # Variables de entorno (Opción 2: Docker + Local)
+├── .env.docker.example            # Variables de entorno (Opción 1: Todo Docker)
+├── .env.local.example             # Variables de entorno (Opción 3: Todo Local)
 ├── .gitignore
 ├── docker-compose.yml
 ├── Dockerfile
@@ -146,15 +147,23 @@ PRUEBALOGYCA/
 ```bash
 git clone https://github.com/stg077/PruebaLOGYCA.git
 cd PruebaLOGYCA
-
+```
 ### Configurar variables de entorno
-###Antes de ejecutar cualquier opción, copia los archivos de ejemplo:
 
-cp .env.example .env
-cp .env.docker.example .env.docker
+Antes de ejecutar cualquier opción, copia el archivo de ejemplo correspondiente:
 
-#Estos archivos contienen la configuración para desarrollo local y con docker (con Azurite como emulador de Azure #Storage). Los valores ya están preconfigurados y no necesitan cambios para desarrollo.
+| Opción              | Comando                              |
+|---------------------|--------------------------------------|
+| 1 (Todo Docker)     | `cp .env.docker.example .env.docker` |
+| 2 (Docker + Local)  | `cp .env.example .env`               |
+| 3 (Todo Local)      | `cp .env.local.example .env`         |
 
+**Nota sobre puertos:** PostgreSQL en Docker se expone en el puerto `5433` del host para evitar conflictos con instalaciones locales de PostgreSQL (que usan `5432`).
+
+### Crear entorno virtual e instalar dependencias
+
+
+```bash
 # Crear el entorno virtual
 python3 -m venv venv
 
@@ -166,10 +175,10 @@ source venv/bin/activate      # Linux / macOS
 pip install --upgrade pip
 pip install -r requirements.txt
 ```
-En caso de que solo descargue el comprimido del proyecto corrobore que este dentro de la raiz del proyecto para realizar
-todo de la mejor manera
----
 
+En caso de que solo descargue el comprimido del proyecto, corrobore que esté dentro de la raíz del proyecto para realizar todo de la mejor manera.
+
+---
 
 ### Opción 1: Todo con Docker Compose (recomendada)
 
@@ -190,18 +199,6 @@ Una vez que los contenedores estén corriendo, puedes pasar directamente a la se
 ### Opción 2: Docker para infraestructura + local para desarrollo
 Levanta solo PostgreSQL, Azurite y N8N con Docker, y ejecuta la API y el Worker localmente.
 
-⚠️ **Importante:** Si tienes PostgreSQL instalado localmente en Windows/Mac, detén el servicio antes de continuar para evitar conflictos de puerto:
-
-**Windows:**
-```powershell
-Stop-Service -Name postgresql-x64-18
-```
-
-**Mac:**
-```bash
-brew services stop postgresql
-```
-
 #### 1. Levantar infraestructura
 
 ```bash
@@ -215,14 +212,14 @@ uvicorn app.main:app --reload
 ```
 
 La API estará disponible en `http://localhost:8000/docs`
-Una vez que los contenedores estén corriendo, puedes pasar directamente a la sección de [Probar el flujo Completo](#probar-el-flujo-completo).
+
 
 #### 3. Iniciar el Worker (en otra terminal)
 
 ```bash
 python -m app.services.worker
 ```
-
+Una vez que los contenedores estén corriendo, puedes pasar directamente a la sección de [Probar el flujo Completo](#probar-el-flujo-completo).
 ---
 
 ### Opción 3: Todo manual (sin Docker Compose)
@@ -273,11 +270,22 @@ python -m app.services.worker
    - Abrir `http://localhost:5678` en el navegador
    - Ir a **Workflows** > **Import from File**
    - Seleccionar el archivo **`n8n/workflow.json`** incluido en el proyecto
-   - Configurar las credenciales de PostgreSQL en N8N (host: `localhost` o `postgres` si es Docker, puerto: `5432`, **base: `logyca_sales`**, usuario: `postgres`, contraseña: `postgres`)
+   - Configurar las credenciales de PostgreSQL en N8N:
+     - **Base de datos:** `logyca_sales`
+     - **Usuario:** `postgres`
+     - **Contraseña:** `postgres`
+     - **Host y Puerto según la opción:**
+
+       | Opción | Host | Puerto |
+       |--------|------|--------|
+       | 1 | `postgres` | `5432` |
+       | 2 | `host.docker.internal` | `5433` |
+       | 3 | `host.docker.internal` | `5432` |
    - Activar el workflow para que ejecute periódicamente y genere el resumen diario en `sales_daily_summary`
+
 6. Para validar la ejecucion de el WorkFlow de n8n ejecutar `http://localhost:8000/stats` Este traera una breve resumen de las base de datos integradas
 
-**Se recomienda utilizar el Swagger UI para que el proceso de validacion ses mas sencillo**
+**Se recomienda utilizar el Swagger UI (`http://localhost:8000/docs`) para que el proceso de validación sea más sencillo.**
 
 ### Ejecutar las pruebas
 
@@ -334,9 +342,6 @@ Respuesta:
 ```
 
 ---
-
-GET /job/{job_id}
-
 
 ### GET /stats
 Respuesta:
@@ -419,4 +424,5 @@ Resumen diario generado por N8N.
 - **psycopg2** — Driver de PostgreSQL con soporte para inserción masiva (execute_values)
 - **Azure Blob Storage** — Almacenamiento de archivos CSV (Azurite para local)
 - **Azure Storage Queue** — Cola de mensajes para procesamiento asíncrono
-- **N8N** — Automatización del workfl
+- **N8N** — Automatización del workflow de reportes diarios
+- **Docker** — Contenerización y orquestació

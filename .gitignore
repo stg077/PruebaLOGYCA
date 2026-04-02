@@ -13,8 +13,10 @@ __pycache__/
 # Variables de entorno
 .env
 .env.docker
+.env.local
 !.env.example
 !.env.docker.example
+!.env.local.example
 
 *.log
 .dockerignore
