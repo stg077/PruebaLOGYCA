@@ -146,28 +146,64 @@ PRUEBALOGYCA/
 ```bash
 git clone https://github.com/stg077/PruebaLOGYCA.git
 cd PruebaLOGYCA
-python -m venv venv
-venv\Scripts\activate          # Windows
+# Crear el entorno virtual
+python3 -m venv venv
+
+# Activar el entorno
+source venv/bin/activate      # Linux / macOS
+# venv\Scripts\activate       # Windows (PowerShell/CMD)
+
+# Instalar dependencias
+pip install --upgrade pip
 pip install -r requirements.txt
 ```
+En caso de que solo descargue el comprimido del proyecto corrobore que este dentro de la raiz del proyecto para realizar
+todo de la mejor manera
+---
+
+### Configurar variables de entorno
+
+Antes de ejecutar cualquier opción, copia los archivos de ejemplo:
+```bash
+rm .env .env.docker
+cp .env.example .env
+cp .env.docker.example .env.docker
+```
+
+Estos archivos contienen la configuración para desarrollo local (con Azurite como emulador de Azure Storage). Los valores ya están preconfigurados y no necesitan cambios para desarrollo.
 
 ---
 
 ### Opción 1: Todo con Docker Compose (recomendada)
 
-Levanta todos los servicios con un solo comando: PostgreSQL, Azurite, N8N, la API y el Worker.
+Este comando levanta todo el ecosistema: PostgreSQL, Azurite, n8n, la API y el Worker.
+
+Nota: Si tienes un entorno virtual activo, puedes desactivarlo con el comando desactivate antes de correr Docker para evitar confusiones de rutas, aunque no es estrictamente necesario.
 
 ```bash
 docker-compose up -d --build
 ```
 
-La API queda disponible en `http://localhost:8000/docs`. No se necesita iniciar nada más manualmente. Despues de esto puede psar a la seccion de Probar el flujo Completo
+**No se necesita iniciar nada más manualmente.**
+La API queda disponible en `http://localhost:8000/docs`.
+Una vez que los contenedores estén corriendo, puedes pasar directamente a la sección de [Probar el flujo Completo](#probar-el-flujo-completo).
 
 ---
 
 ### Opción 2: Docker para infraestructura + local para desarrollo
-
 Levanta solo PostgreSQL, Azurite y N8N con Docker, y ejecuta la API y el Worker localmente.
+
+⚠️ **Importante:** Si tienes PostgreSQL instalado localmente en Windows/Mac, detén el servicio antes de continuar para evitar conflictos de puerto:
+
+**Windows:**
+```powershell
+Stop-Service -Name postgresql-x64-18
+```
+
+**Mac:**
+```bash
+brew services stop postgresql
+```
 
 #### 1. Levantar infraestructura
 
@@ -182,6 +218,7 @@ uvicorn app.main:app --reload
 ```
 
 La API estará disponible en `http://localhost:8000/docs`
+Una vez que los contenedores estén corriendo, puedes pasar directamente a la sección de [Probar el flujo Completo](#probar-el-flujo-completo).
 
 #### 3. Iniciar el Worker (en otra terminal)
 
@@ -329,7 +366,7 @@ Respuesta:
       "record_count": 3386,
       "updated_at": "2026-04-02T12:45:58.569438"
     },
-    (....)
+    {(....)}
 }
 
 ```
