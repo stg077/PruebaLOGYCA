@@ -161,7 +161,7 @@ Levanta todos los servicios con un solo comando: PostgreSQL, Azurite, N8N, la AP
 docker-compose up -d --build
 ```
 
-La API queda disponible en `http://localhost:8000/docs`. No se necesita iniciar nada más manualmente.
+La API queda disponible en `http://localhost:8000/docs`. No se necesita iniciar nada más manualmente. Despues de esto puede psar a la seccion de Probar el flujo Completo
 
 ---
 
@@ -241,6 +241,9 @@ python -m app.services.worker
    - Seleccionar el archivo `n8n/workflow.json` incluido en el proyecto
    - Configurar las credenciales de PostgreSQL en N8N (host: `localhost` o `postgres` si es Docker, puerto: `5432`, base: `logyca_sales`, usuario: `postgres`, contraseña: `postgres`)
    - Activar el workflow para que ejecute periódicamente y genere el resumen diario en `sales_daily_summary`
+6. Para validar la ejecucion de el WorkFlow de n8n ejecutar `http://localhost:8000/stats` Este traera una breve resumen de las base de datos integradas
+
+**Se recomienda utilizar el Swagger UI para que el proceso de validacion ses mas sencillo**
 
 ### Ejecutar las pruebas
 
@@ -256,9 +259,10 @@ Las pruebas usan mocks y no requieren servicios externos corriendo.
 
 | Método | Ruta          | Descripción |
 |--------|---------------|-------------|
-| GET    | /             | Health check |
+| GET    | /             | Validacion inicio de API  |
 | POST   | /upload       | Sube un CSV, lo almacena en Blob y encola su procesamiento |
 | GET    | /job/{job_id} | Consulta el estado de un job (PENDING, PROCESSING, COMPLETED, FAILED) |
+| GET    | /stats        | Consulta las bases de Datos retornado un breve resumen de las mismas |
 
 ### POST /upload
 
@@ -293,6 +297,41 @@ Respuesta:
     "status": "COMPLETED",
     "created_at": "2026-01-15 10:30:00"
 }
+```
+
+---
+
+GET /job/{job_id}
+
+
+### GET /stats
+Respuesta:
+```json
+{
+  "total_sales_records": 300000,
+  "total_jobs": 4,
+  "completed_jobs": 3,
+  "sales_daily_summary_rows": 91,
+  "sales_daily_summary_sample": [
+    {
+      "id": 50,
+      "date": "2026-01-01",
+      "total_sales": 1821138.26,
+      "total_quantity": 34674,
+      "record_count": 3294,
+      "updated_at": "2026-04-02T12:45:58.569438"
+    },
+    {
+      "id": 34,
+      "date": "2026-01-02",
+      "total_sales": 1886160.99,
+      "total_quantity": 35463,
+      "record_count": 3386,
+      "updated_at": "2026-04-02T12:45:58.569438"
+    },
+    (....)
+}
+
 ```
 
 ---
