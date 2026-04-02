@@ -13,11 +13,9 @@ EXPECTED_CSV_COLUMNS = {"date", "product_id", "quantity", "price"}
 
 @router.post("/upload")
 async def cargar_archivo(file: UploadFile = File(...), db=Depends(get_db)):
-    """Recibe un CSV, lo sube a Azure Blob Storage y encola su procesamiento.
-
-    El archivo se sube en streaming sin cargarlo completamente en memoria.
-    Retorna inmediatamente un job_id para consultar el estado.
-    """
+    #Recibe un CSV, lo sube a Azure Blob Storage y encola su procesamiento.
+    #El archivo se sube en streaming sin cargarlo completamente en memoria.
+    #Retorna inmediatamente un job_id para consultar el estado.
     if not file.filename:
         raise HTTPException(status_code=400, detail="Archivo no proporcionado")
 
@@ -68,7 +66,7 @@ async def cargar_archivo(file: UploadFile = File(...), db=Depends(get_db)):
 
 @router.get("/job/{job_id}")
 async def consulta_estado(job_id: str, db=Depends(get_db)):
-    """Consulta el estado de procesamiento de un job."""
+    #Consulta el estado de procesamiento de un job.
     cursor = db.cursor(cursor_factory=RealDictCursor)
     cursor.execute("SELECT * FROM jobs WHERE id = %s", (job_id,))
     job = cursor.fetchone()
@@ -92,7 +90,7 @@ async def consulta_estado(job_id: str, db=Depends(get_db)):
 
 @router.get("/stats")
 async def stats(db=Depends(get_db)):
-    """Muestra conteos de las tablas principales para validar el procesamiento."""
+    #Muestra conteos de las tablas principales para validar el procesamiento.
     cursor = db.cursor()
 
     cursor.execute("SELECT COUNT(*) FROM sales")
@@ -123,5 +121,5 @@ async def stats(db=Depends(get_db)):
 
 @router.get("/")
 async def inicio():
-    """Health check del servicio"""
+    #Verificacion de estado de Api
     return {"status": "CORRIENDO"}

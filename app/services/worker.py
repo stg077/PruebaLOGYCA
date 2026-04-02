@@ -10,20 +10,11 @@ from app.db.creacion_SQL import get_connection
 
 
 def process_csv_stream(blob_stream, job_id: str, conn) -> int:
-    """Procesa el CSV por chunks usando streaming + execute_values para inserción masiva.
+   #Procesa el CSV por chunks usando streaming + execute_values para inserción masiva.
+    #El blob se descarga en chunks de 4MB para no cargar todo en memoria.
+    #Las filas se insertan en lotes usando execute_values (un solo INSERT con
+    #múltiples VALUES), que es significativamente más rápido que executemany.
 
-    El blob se descarga en chunks de 4MB para no cargar todo en memoria.
-    Las filas se insertan en lotes usando execute_values (un solo INSERT con
-    múltiples VALUES), que es significativamente más rápido que executemany.
-
-    Args:
-        blob_stream: StorageStreamDownloader del blob
-        job_id: ID del job para asociar los registros
-        conn: Conexión a PostgreSQL
-
-    Returns:
-        Número total de filas insertadas
-    """
     cursor = conn.cursor()
     batch = []
     total_rows = 0
@@ -117,12 +108,7 @@ def process_csv_stream(blob_stream, job_id: str, conn) -> int:
 
 
 def _insert_batch(cursor, batch: list):
-    """Inserta un lote de filas usando execute_values (inserción masiva real).
-
-    execute_values genera un solo INSERT con múltiples VALUES, por ejemplo:
-    INSERT INTO sales (...) VALUES (row1), (row2), ..., (row5000)
-    Esto es ~10x más rápido que executemany que ejecuta un INSERT por fila.
-    """
+    #Inserta un lote de filas usando execute_values (inserción masiva real).
     execute_values(
         cursor,
         """INSERT INTO sales (job_id, date, product_id, quantity, price, total)
@@ -134,10 +120,8 @@ def _insert_batch(cursor, batch: list):
 
 # Mantener compatibilidad: función legacy para los tests existentes
 def process_csv(csv_stream: io.StringIO, job_id: str, conn) -> int:
-    """Procesa un CSV desde un StringIO (usado en tests y compatibilidad).
-
-    Para producción se usa process_csv_stream que trabaja con el blob directamente.
-    """
+    #Procesa un CSV desde un StringIO (usado en tests y compatibilidad).
+    #Para producción se usa process_csv_stream que trabaja con el blob directamente.
     reader = csv.DictReader(csv_stream)
     batch = []
     total_rows = 0
@@ -165,7 +149,7 @@ def process_csv(csv_stream: io.StringIO, job_id: str, conn) -> int:
 
 
 def process_queue_messages():
-    """Escucha la cola y procesa los mensajes de forma continua"""
+    #Escucha la cola y procesa los mensajes de forma continua
     queue_service = QueueServiceClient.from_connection_string(AZURE_STORAGE_CONNECTION_STRING)
     queue_client = queue_service.get_queue_client(QUEUE_NAME)
 
@@ -225,7 +209,6 @@ def process_queue_messages():
                 conn.close()
 
         time.sleep(WORKER_POLL_INTERVAL)
-
 
 if __name__ == "__main__":
     process_queue_messages()
