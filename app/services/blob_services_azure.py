@@ -7,7 +7,7 @@ def get_blob_service():
 
 
 def _ensure_container(blob_service):
-    """Crea el container si no existe"""
+    #Crea el container si no existe
     container_client = blob_service.get_container_client(BLOB_CONTAINER_NAME)
     try:
         container_client.create_container()
@@ -25,7 +25,7 @@ def upload_to_blob_stream(file_stream, blob_name: str) -> str:
     return f"{BLOB_CONTAINER_NAME}/{blob_name}"
 
 
-def download_blob_stream(blob_path: str):#no la entiendo bien
+def download_blob_stream(blob_path: str):
     #Descarga un blob de Azure como stream para procesarlo por chunks sin cargar en memoria.
     blob_service = get_blob_service()
     container_name, blob_name = blob_path.split("/", 1)
