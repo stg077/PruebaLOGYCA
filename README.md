@@ -276,11 +276,11 @@ python -m app.services.worker
      - **Contraseña:** `postgres`
      - **Host y Puerto según la opción:**
 
-       | Opción | Host | Puerto |
-       |--------|------|--------|
-       | 1 | `postgres` | `5432` |
-       | 2 | `host.docker.internal` | `5433` |
-       | 3 | `host.docker.internal` | `5432` |
+       | Opción | Host                   | Puerto |
+       |--------|------------------------|--------|
+       | 1      | `postgres`             | `5432` |
+       | 2      | `host.docker.internal` | `5433` |
+       | 3      | `host.docker.internal` | `5432` |
    - Activar el workflow para que ejecute periódicamente y genere el resumen diario en `sales_daily_summary`
 
 6. Para validar la ejecucion de el WorkFlow de n8n ejecutar `http://localhost:8000/stats` Este traera una breve resumen de las base de datos integradas
@@ -425,4 +425,4 @@ Resumen diario generado por N8N.
 - **Azure Blob Storage** — Almacenamiento de archivos CSV (Azurite para local)
 - **Azure Storage Queue** — Cola de mensajes para procesamiento asíncrono
 - **N8N** — Automatización del workflow de reportes diarios
-- **Docker** — Contenerización y orquestació
+- **Docker** — Contenerización y orquestación de servicios
