@@ -169,6 +169,12 @@ def process_queue_messages():
     queue_service = QueueServiceClient.from_connection_string(AZURE_STORAGE_CONNECTION_STRING)
     queue_client = queue_service.get_queue_client(QUEUE_NAME)
 
+    # Crear la cola si no existe (puede arrancar antes que la API)
+    try:
+        queue_client.create_queue()
+    except Exception:
+        pass  # Ya existe
+
     print("Worker escuchando la cola...")
 
     while True:

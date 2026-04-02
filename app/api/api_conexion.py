@@ -90,6 +90,37 @@ async def consulta_estado(job_id: str, db=Depends(get_db)):
     return result
 
 
+@router.get("/stats")
+async def stats(db=Depends(get_db)):
+    """Muestra conteos de las tablas principales para validar el procesamiento."""
+    cursor = db.cursor()
+
+    cursor.execute("SELECT COUNT(*) FROM sales")
+    total_sales = cursor.fetchone()[0]
+
+    cursor.execute("SELECT COUNT(*) FROM jobs")
+    total_jobs = cursor.fetchone()[0]
+
+    cursor.execute("SELECT COUNT(*) FROM jobs WHERE status = 'COMPLETED'")
+    completed_jobs = cursor.fetchone()[0]
+
+    cursor.execute("SELECT COUNT(*) FROM sales_daily_summary")
+    total_summary_rows = cursor.fetchone()[0]
+
+    cursor.execute("SELECT * FROM sales_daily_summary ORDER BY date LIMIT 10")
+    cols = [desc[0] for desc in cursor.description]
+    summary = [dict(zip(cols, row)) for row in cursor.fetchall()]
+
+    cursor.close()
+    return {
+        "total_sales_records": total_sales,
+        "total_jobs": total_jobs,
+        "completed_jobs": completed_jobs,
+        "sales_daily_summary_rows": total_summary_rows,
+        "sales_daily_summary_sample": summary
+    }
+
+
 @router.get("/")
 async def inicio():
     """Health check del servicio"""

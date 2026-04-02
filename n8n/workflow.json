@@ -17,7 +17,7 @@
         0,
         0
       ],
-      "id": "621f1a38-4952-4360-9a16-ababaf48214e",
+      "id": "3cb3798e-3284-48c8-b02e-32e1a41976bb",
       "name": "Schedule Trigger"
     },
     {
@@ -32,11 +32,11 @@
         208,
         0
       ],
-      "id": "b50bffca-a5ae-4e76-b998-ca4e0dafe0db",
+      "id": "f76f3ef1-5d3e-4a54-b34c-3779368c249b",
       "name": "Execute a SQL query",
       "credentials": {
         "postgres": {
-          "id": "yXrt48rMHN5Ou4Fp",
+          "id": "MA0jac5lXjpbb9rk",
           "name": "Postgres account"
         }
       }
@@ -53,11 +53,11 @@
         416,
         0
       ],
-      "id": "309bb2b4-3d04-45f6-bbae-4d02f32e084d",
+      "id": "ae6cd825-8201-46d6-a94c-e6d5d64d7159",
       "name": "Execute a SQL query1",
       "credentials": {
         "postgres": {
-          "id": "yXrt48rMHN5Ou4Fp",
+          "id": "MA0jac5lXjpbb9rk",
           "name": "Postgres account"
         }
       }
@@ -93,11 +93,11 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "d637dbd1-47dc-47f7-a23e-b4dcb8654fb8",
+  "versionId": "870ec880-6018-4a06-ac23-991518574260",
   "meta": {
     "templateCredsSetupCompleted": true,
-    "instanceId": "71ed796ecdbb9d89ccfe26f04d2e3e5f7eca1301fefa2bcad5476a85802ef221"
+    "instanceId": "29952ee10cf0344ec5df1a3ab6a56a5d524b44bb2ea4080256b3e598be6a4940"
   },
-  "id": "PPmknYFjT2jajfs7",
+  "id": "EOIbNwZp18ERn5zP",
   "tags": []
 }
