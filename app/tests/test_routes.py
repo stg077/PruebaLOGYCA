@@ -9,7 +9,7 @@ client = TestClient(app)
 
 # ---- Mock de la base de datos ----
 class MockCursor:
-    """Cursor simulado que almacena datos en memoria"""
+    #Cursor simulado que almacena datos en memoria
     def __init__(self):
         self.rows = []
         self.last_query = None
@@ -29,7 +29,7 @@ class MockCursor:
 
 
 class MockConnection:
-    """Conexión simulada a PostgreSQL"""
+    #Conexión simulada a PostgreSQL
     def __init__(self):
         self._cursor = MockCursor()
 
@@ -59,7 +59,7 @@ app.dependency_overrides[get_db] = get_mock_db
 # ---- Tests de endpoints ----
 
 def test_inicio():
-    """Verifica que el health check funcione"""
+    #Verifica que el health check funcione
     response = client.get("/")
     assert response.status_code == 200
     assert response.json()["status"] == "CORRIENDO"
@@ -68,7 +68,7 @@ def test_inicio():
 @patch("app.api.api_conexion.upload_to_blob_stream", return_value="csv-uploads/test.csv")
 @patch("app.api.api_conexion.send_processing_message")
 def test_upload_csv_valido(mock_queue, mock_blob):
-    """Verifica que se pueda subir un CSV correctamente"""
+    #Verifica que se pueda subir un CSV correctamente
     csv_content = "date,product_id,quantity,price\n2026-01-01,1001,2,10.5\n"
     file = io.BytesIO(csv_content.encode("utf-8"))
 
@@ -86,7 +86,7 @@ def test_upload_csv_valido(mock_queue, mock_blob):
 
 
 def test_upload_archivo_no_csv():
-    """Verifica que rechace archivos que no son CSV"""
+    #Verifica que rechace archivos que no son CSV
     file = io.BytesIO(b"contenido falso")
 
     response = client.post(
@@ -99,7 +99,7 @@ def test_upload_archivo_no_csv():
 @patch("app.api.api_conexion.upload_to_blob_stream", return_value="csv-uploads/test.csv")
 @patch("app.api.api_conexion.send_processing_message")
 def test_upload_csv_columnas_invalidas(mock_queue, mock_blob):
-    """Verifica que rechace CSV con columnas incorrectas"""
+    #Verifica que rechace CSV con columnas incorrectas
     csv_content = "nombre,apellido,edad\nJuan,Perez,30\n"
     file = io.BytesIO(csv_content.encode("utf-8"))
 
@@ -112,7 +112,7 @@ def test_upload_csv_columnas_invalidas(mock_queue, mock_blob):
 
 
 def test_upload_archivo_vacio():
-    """Verifica que rechace archivos vacíos"""
+    #Verifica que rechace archivos vacíos
     file = io.BytesIO(b"")
 
     response = client.post(
@@ -123,6 +123,6 @@ def test_upload_archivo_vacio():
 
 
 def test_get_job_no_existente():
-    """Verifica que devuelva 404 para un job que no existe"""
+    #Verifica que devuelva 404 para un job que no existe#
     response = client.get("/job/00000000-0000-0000-0000-000000000000")
     assert response.status_code == 404
